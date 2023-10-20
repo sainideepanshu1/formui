@@ -1,17 +1,36 @@
+import axios from 'axios'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const Login = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         if (username !== '' && password !== '') {
-            
+            try {
+                const response = await axios.post('http://localhost:8001/login', { username, password });
+                if (response.data.status === 'success') {
+                    alert("Login Successful");
+                } else {
+                    alert("Login failed !! Wrong Credentials ");
+                }
+            } catch (error) {
+                if (error.response) {
+                    if (error.response.status === 400) {
+                        alert("Login failed !! Wrong Credentials");
+                    } else if (error.response.status === 500) {
+                        alert("Internal server error. Please try again later.");
+                    }
+                } else {
+                    alert("Network error. Please check your internet connection.");
+                }
+            }
         } else {
             alert('Username and Password Required');
         }
-    }
+    };
+
     return (
         <form onSubmit={handleLogin}>
             <div className="outer">

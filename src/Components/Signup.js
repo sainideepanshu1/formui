@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import { Link } from 'react-router-dom'
 const Signup = () => {
     const [username, setUsername] = useState('');
@@ -8,7 +9,28 @@ const Signup = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        
+        if (password === conPassword) {
+            const userData = {
+                username: username,
+                email: email,
+                password: password,
+            }
+            axios.post('http://localhost:8001/create_user', userData)
+                .then((Response) => {
+                    alert("Registration Succesfull", Response.data)
+                    setUsername('')
+                    setEmail('')
+                    setPassword('')
+                    setConPassword('')
+                })
+                .catch((error) => {
+                    alert('Registration failed', error);
+                })
+        }
+        else{
+            alert("Password and Confirm Password does not match")
+        }
+
     }
     return (
         <form onSubmit={submitHandler}>
